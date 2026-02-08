@@ -1,0 +1,87 @@
+@page
+@model Ace_Job_Agency.Pages.Manage.TwoFactorSetupModel
+@{
+ ViewData["Title"] = "Two-Factor Authentication";
+}
+
+<div class="container" style="max-width: 560px; margin-top: 2rem;">
+ <div class="card">
+ <div class="card-header" style="text-align: center; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);">
+ <h2 style="margin: 0; color: white; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+ <i class="bi bi-shield-lock-fill" style="font-size: 1.75rem;"></i>
+ Two-Factor Authentication
+ </h2>
+ <p style="margin: 0.5rem 0 0 0; color: rgba(255,255,255,0.8); font-size: 0.95rem;">Enhance your account security with email OTP</p>
+ </div>
+
+ <div class="card-body">
+ <!-- Info Box -->
+ <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); padding: 1.25rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+ <h4 style="color: var(--primary-light); margin: 0 0 0.75rem 0; display: flex; align-items: center; gap: 0.5rem;">
+ <i class="bi bi-info-circle-fill"></i>What is 2FA?
+ </h4>
+ <p style="margin: 0; color: var(--gray-400); font-size: 0.95rem; line-height: 1.6;">
+ When enabled, you'll receive a 6-digit code via email every time you log in. This adds an extra layer of security to your account.
+ </p>
+ </div>
+
+ @if (Model.TwoFactorEnabled)
+ {
+ <div style="background: rgba(16, 185, 129, 0.15); border: 2px solid var(--success); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; text-align: center;">
+ <div style="font-size: 3rem; margin-bottom: 0.75rem;">??</div>
+ <p style="margin: 0; color: var(--success-light); font-weight: 700; font-size: 1.1rem;">2FA is ENABLED</p>
+ <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--gray-400);">Your account is protected with email-based OTP verification.</p>
+ </div>
+
+ <form method="post" asp-page-handler="Disable">
+ <button type="submit" class="btn btn-danger btn-block btn-lg">
+ <i class="bi bi-shield-x me-2"></i>Disable 2FA
+ </button>
+ </form>
+ }
+ else
+ {
+ <div style="background: rgba(239, 68, 68, 0.15); border: 2px solid var(--danger); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; text-align: center;">
+ <div style="font-size: 3rem; margin-bottom: 0.75rem;">??</div>
+ <p style="margin: 0; color: var(--danger-light); font-weight: 700; font-size: 1.1rem;">2FA is DISABLED</p>
+ <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--gray-400);">Your account is not protected with two-factor authentication.</p>
+ </div>
+
+ <form method="post" asp-page-handler="Enable">
+ <button type="submit" class="btn btn-primary btn-block btn-lg">
+ <i class="bi bi-shield-check me-2"></i>Enable 2FA
+ </button>
+ </form>
+ }
+
+ <hr>
+
+ <!-- How it works -->
+ <h4 style="color: var(--gray-200); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+ <i class="bi bi-list-ol"></i>How it works
+ </h4>
+ <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+ <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+ <span style="background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">1</span>
+ <span style="color: var(--gray-400);">Sign in with your email and password</span>
+ </div>
+ <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+ <span style="background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">2</span>
+ <span style="color: var(--gray-400);">A 6-digit code is sent to your email</span>
+ </div>
+ <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+ <span style="background: var(--primary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">3</span>
+ <span style="color: var(--gray-400);">Enter the code to complete login</span>
+ </div>
+ <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+ <span style="background: var(--success); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">?</span>
+ <span style="color: var(--gray-400);">Your session is secured!</span>
+ </div>
+ </div>
+
+ <a href="/Index" class="btn btn-ghost btn-block" style="margin-top: 2rem;">
+ <i class="bi bi-arrow-left me-1"></i>Back to Profile
+ </a>
+ </div>
+ </div>
+</div>

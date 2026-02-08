@@ -1,0 +1,24 @@
+﻿@page
+@model Ace_Job_Agency.Pages.LogoutModel
+@{
+}
+
+<script>
+ // Clear per-tab token material immediately when user visits logout page.
+ // This prevents reusing stale SessionToken/tabId after logging out and back in.
+ try { sessionStorage.removeItem('sessionToken'); sessionStorage.removeItem('tabId'); } catch(e) { }
+</script>
+
+<form method="post">
+	<div class="container mt-5">
+		<div class="row justify-content-center">
+			<div class="col-sm-12 col-md-12 col-lg-4">
+				<p> Are you sure you want to logout? </p>
+				<p>
+					<button class="btn btn-primary" asp-page-handler="Logout">Yes</button>
+					<button class="btn btn-light ml-5 border-dark" asp-page-handler="DontLogout">No</button>
+				</p>
+			</div>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,26 @@
+﻿@page "/errors/404"
+@{
+    ViewData["Title"] = "Not Found";
+}
+
+<div class="container" style="max-width: 480px; margin-top: 4rem;">
+    <div class="card">
+        <div class="card-header" style="text-align: center; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);">
+            <div style="font-size: 4rem; margin-bottom: 0.5rem;">🔍</div>
+            <h1 style="margin: 0; color: white; font-size: 2.5rem;">404</h1>
+            <p style="margin: 0.5rem 0 0 0; color: rgba(255,255,255,0.9);">Page Not Found</p>
+        </div>
+        <div class="card-body" style="text-align: center; padding: 2rem;">
+            <p style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--gray-700);">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+            <p style="color: var(--gray-500); margin-bottom: 2rem;">
+                It might have been deleted or the URL might be incorrect.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/" class="btn btn-primary"><i class="bi bi-house me-1"></i>Go to Home</a>
+                <a href="javascript:history.back()" class="btn btn-ghost"><i class="bi bi-arrow-left me-1"></i>Go Back</a>
+            </div>
+        </div>
+    </div>
+</div>

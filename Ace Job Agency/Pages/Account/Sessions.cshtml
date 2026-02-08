@@ -1,0 +1,68 @@
+@page
+@model Ace_Job_Agency.Pages.Account.SessionsModel
+@{
+ ViewData["Title"] = "Active Sessions";
+}
+
+<div class="container" style="max-width: 700px; margin-top: 2rem;">
+ <div class="card">
+ <div class="card-header" style="text-align: center; background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);">
+ <h2 style="margin: 0; color: white; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+ <i class="bi bi-laptop" style="font-size: 1.75rem;"></i>
+ Active Sessions
+ </h2>
+ <p style="margin: 0.5rem 0 0 0; color: rgba(255,255,255,0.8); font-size: 0.95rem;">Manage devices logged into your account</p>
+ </div>
+
+ <div class="card-body">
+ @if (Model.Sessions?.Any() != true)
+ {
+ <div style="text-align: center; padding: 3rem;">
+ <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">??</div>
+ <p style="font-size: 1.1rem; color: var(--gray-600); margin-bottom: 0.5rem;">No active sessions found</p>
+ <p style="color: var(--gray-500);">You're not logged in on any devices right now.</p>
+ </div>
+ }
+ else
+ {
+ <div style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+ <i class="bi bi-info-circle" style="color: var(--primary);"></i>
+ <span style="color: var(--gray-600); font-size: 0.9rem;">
+ You have <strong style="color: var(--navy);">@Model.Sessions.Count</strong> active session(s)
+ </span>
+ </div>
+
+ <div style="display: flex; flex-direction: column; gap: 1rem;">
+ @foreach (var s in Model.Sessions)
+ {
+ <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; transition: var(--transition-base);">
+ <div style="flex: 1; min-width: 200px;">
+ <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+ <i class="bi bi-laptop" style="font-size: 1.5rem; color: var(--primary);"></i>
+ <span style="font-weight: 600; color: var(--navy);">Session #@s.Id</span>
+ </div>
+ <div style="display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; color: var(--gray-600);">
+ <span><i class="bi bi-globe me-1"></i>IP: @s.IpAddress</span>
+ <span><i class="bi bi-browser-chrome me-1"></i>@(s.UserAgent?.Substring(0, Math.Min(40, s.UserAgent?.Length ?? 0)) ?? "Unknown")...</span>
+ <span><i class="bi bi-clock me-1"></i>Expires (SGT): @s.ExpiresAtLocal.ToString("yyyy-MM-dd HH:mm:ss")</span>
+ </div>
+ </div>
+ <form method="post" asp-page-handler="Revoke" style="margin: 0;">
+ <input type="hidden" name="id" value="@s.Id" />
+ <button type="submit" class="btn btn-danger btn-sm">
+ <i class="bi bi-x-circle me-1"></i>Revoke
+ </button>
+ </form>
+ </div>
+ }
+ </div>
+ }
+ </div>
+ </div>
+
+ <div style="margin-top: 1.5rem; text-align: center;">
+ <a href="/Index" class="btn btn-ghost">
+ <i class="bi bi-arrow-left me-1"></i>Back to Profile
+ </a>
+ </div>
+</div>

@@ -1,0 +1,28 @@
+@page
+@model Ace_Job_Agency.Pages.Auth.SessionBootstrapModel
+@{
+ Layout = null;
+}
+
+<!doctype html>
+<html>
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width,initial-scale=1" />
+ <title>Bootstrapping session...</title>
+</head>
+<body>
+ <script>
+ (function(){
+ try{
+ var s = '@(Model.SessionToken ?? "")';
+ var t = '@(Model.TabId ?? "")';
+ if(s && s.length){ try { sessionStorage.setItem('sessionToken', s); } catch(e){} }
+ if(t && t.length){ try { sessionStorage.setItem('tabId', t); } catch(e){} }
+ // navigate to index without tokens in query
+ setTimeout(function(){ window.location.href = '/Index'; },300);
+ }catch(e){ window.location.href = '/Index'; }
+ })();
+ </script>
+</body>
+</html>
