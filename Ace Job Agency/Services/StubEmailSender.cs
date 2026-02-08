@@ -12,7 +12,7 @@ namespace Ace_Job_Agency.Services
  }
  public Task SendEmailAsync(string to, string subject, string body)
  {
- _logger.LogInformation("Stub email sent to {to} subject {subject} body {body}", to, subject, body);
+ _logger.LogInformation("Stub email sent to {to} with subject {subject}. Email body omitted from logs for security.", to, subject);
  return Task.CompletedTask;
  }
  }
