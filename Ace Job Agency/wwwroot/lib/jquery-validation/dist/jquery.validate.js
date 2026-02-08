@@ -886,7 +886,7 @@ $.extend( $.validator, {
 		// old code, and will be removed in the next major release.
 		defaultMessage: function( element, rule ) {
 			if ( typeof rule === "string" ) {
-				rule = { method: rule };
+			rule = { method: rule };
 			}
 
 			var message = this.findDefined(
@@ -1100,12 +1100,13 @@ $.extend( $.validator, {
 				element = element[ 0 ];
 			}
 
-			// Only proceed for actual DOM elements or window; avoid treating arbitrary strings as selectors/HTML.
-			if ( !element || ( !element.nodeType && element !== element.window ) ) {
+			// Only proceed for actual DOM elements; reject strings and other non-DOM types
+			// to prevent jQuery from interpreting arbitrary strings as HTML (CWE-79)
+			if ( !element || typeof element !== "object" || !element.nodeType ) {
 				return undefined;
 			}
 
-			// Always apply ignore filter
+			// Always apply ignore filter — element is guaranteed to be a DOM node here
 			return $( element ).not( this.settings.ignore )[ 0 ];
 		},
 
