@@ -686,7 +686,19 @@ $.extend( $.validator, {
 		},
 
 		clean: function( selector ) {
-			return $( selector )[ 0 ];
+
+			// Ensure we only ever return a DOM element/window, never evaluate arbitrary strings as HTML.
+			if ( selector && selector.nodeType ) {
+				return selector;
+			}
+
+			// Support being passed a jQuery object.
+			if ( selector && selector.jquery ) {
+				return selector[ 0 ];
+			}
+
+			// For any other type (including strings), do not call jQuery(selector) to avoid XSS.
+			return undefined;
 		},
 
 		errors: function() {
@@ -1080,6 +1092,16 @@ $.extend( $.validator, {
 			// If radio/checkbox, validate first element in group instead
 			if ( this.checkable( element ) ) {
 				element = this.findByName( element.name );
+			}
+
+			// Normalize jQuery object to underlying DOM element, if applicable
+			if ( element && element.jquery ) {
+				element = element[ 0 ];
+			}
+
+			// Only proceed for actual DOM elements or window; avoid treating arbitrary strings as selectors/HTML.
+			if ( !element || ( !element.nodeType && element !== element.window ) ) {
+				return undefined;
 			}
 
 			// Always apply ignore filter
