@@ -650,7 +650,9 @@ var i,
 	matches,
 
 	// Instance-specific data
-	expando = jQuery.expando,
+	// Use a selector-engine-specific expando value that cannot be influenced
+	// by external code mutating jQuery.expando via $.extend or other means.
+	expando = "sizzle-" + ( jQuery.expando || ( Date && Date.now ? Date.now() : new Date().getTime() ) ),
 	dirruns = 0,
 	done = 0,
 	classCache = createCache(),
