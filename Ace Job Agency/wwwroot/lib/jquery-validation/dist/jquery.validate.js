@@ -896,7 +896,8 @@ $.extend( $.validator, {
 					// 'title' is never undefined, so handle empty string as undefined
 					!this.settings.ignoreTitle && element.title || undefined,
 					$.validator.messages[ rule.method ],
-					"<strong>Warning: No message defined for " + element.name + "</strong>"
+					// SECURITY FIX: Use plain text instead of HTML for the fallback warning message
+					"Warning: No message defined for " + element.name
 				),
 				theregex = /\$?\{(\d+)\}/g;
 			if ( typeof message === "function" ) {
@@ -1137,7 +1138,9 @@ $.extend( $.validator, {
 				return param;
 			},
 			"string": function( param, element ) {
-				return !!$( param, element.form ).length;
+				// SECURITY FIX: Use .find() to interpret param as a CSS selector only,
+				// never as HTML (guards against XSS via unsafe jQuery plugin - CWE-79)
+				return !!$( element.form ).find( param ).length;
 			},
 			"function": function( param, element ) {
 				return param( element );
@@ -1377,7 +1380,9 @@ $.extend( $.validator, {
 				var keepRule = true;
 				switch ( typeof val.depends ) {
 				case "string":
-					keepRule = !!$( val.depends, element.form ).length;
+					// SECURITY FIX: Use .find() to interpret val.depends as a CSS selector only,
+					// never as HTML (guards against XSS via unsafe jQuery plugin - CWE-79)
+					keepRule = !!$( element.form ).find( val.depends ).length;
 					break;
 				case "function":
 					keepRule = val.depends.call( element, element );
@@ -1608,7 +1613,9 @@ $.extend( $.validator, {
 		equalTo: function( value, element, param ) {
 
 			// Bind to the blur event of the target in order to revalidate whenever the target field is updated
-			var target = $( param );
+			// SECURITY FIX: Use .find() within the form context to interpret param as a CSS selector only,
+			// never as HTML (guards against XSS via unsafe jQuery plugin - CWE-79)
+			var target = $( element.form ).find( param );
 			if ( this.settings.onfocusout && target.not( ".validate-equalTo-blur" ).length ) {
 				target.addClass( "validate-equalTo-blur" ).on( "blur.validate-equalTo", function() {
 					$( element ).valid();
