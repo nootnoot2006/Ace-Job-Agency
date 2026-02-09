@@ -2,135 +2,141 @@
 @model Ace_Job_Agency.Pages.LoginModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 @{
- ViewData["Title"] = "Login";
- Layout = "_Layout";
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
 }
 
 <style>
- .login-page {
- min-height: calc(100vh - 140px);
- display: flex;
- align-items: center;
- justify-content: center;
- }
- .login-card {
- width: 100%;
- max-width: 380px;
- }
- .login-card .card-header {
- padding: 1rem 1.25rem;
- }
- .login-card .card-body {
- padding: 1.25rem;
- }
- .login-card .form-group {
- margin-bottom: 0.875rem;
- }
- .confirm-panel { background: #fff8; border: 1px solid rgba(0,0,0,0.06); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; }
+    .login-page {
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 380px;
+    }
+
+        .login-card .card-header {
+            padding: 1rem 1.25rem;
+        }
+
+        .login-card .card-body {
+            padding: 1.25rem;
+        }
+
+        .login-card .form-group {
+            margin-bottom: 0.875rem;
+        }
+
+    .confirm-panel {
+        background: #fff8;
+        border: 1px solid rgba(0,0,0,0.06);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
 </style>
 
 <div class="login-page">
- <div class="login-card card">
- <div class="card-header" style="text-align: center;">
- <h2 style="margin:0; color: white; display: flex; align-items: center; justify-content: center; gap:0.5rem; font-size:1.35rem;">
- <i class="bi bi-person-circle"></i>
- Welcome Back
- </h2>
- </div>
+    <div class="login-card card">
+        <div class="card-header" style="text-align: center;">
+            <h2 style="margin:0; color: white; display: flex; align-items: center; justify-content: center; gap:0.5rem; font-size:1.35rem;">
+                <i class="bi bi-person-circle"></i>
+                Welcome Back
+            </h2>
+        </div>
 
- <div class="card-body">
- @if (!string.IsNullOrEmpty(Model.Message))
- {
- <div class="alert alert-info" style="padding:0.6rem; font-size:0.85rem;">
- <i class="bi bi-info-circle me-1"></i>@Model.Message
- </div>
- }
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="alert alert-info" style="padding:0.6rem; font-size:0.85rem;">
+                    <i class="bi bi-info-circle me-1"></i>@Model.Message
+                </div>
+            }
 
- @if (Model.ConfirmRequired)
- {
- <div class="confirm-panel">
- <h5 style="margin-top:0;">Existing active session(s) detected</h5>
- <p style="color:var(--gray-600);">We detected <strong>@Model.ExistingSessionCount</strong> active session(s) for this account from other devices or tabs.</p>
- <p style="color:var(--gray-600);">You can continue signing in here — this will end the other active session(s) — or cancel to return and keep the existing sessions.</p>
+            @if (Model.ConfirmRequired)
+            {
+                <div class="confirm-panel">
+                    <h5 style="margin-top:0;">Existing active session(s) detected</h5>
+                    <p style="color:var(--gray-600);">We detected <strong>@Model.ExistingSessionCount</strong> active session(s) for this account from other devices or tabs.</p>
+                    <p style="color:var(--gray-600);">You can continue signing in here — this will end the other active session(s) — or cancel to return and keep the existing sessions.</p>
 
- <form method="post">
- @Html.AntiForgeryToken()
- <input type="hidden" name="confirm" value="true" />
- <input type="hidden" name="pendingLoginToken" value="@Model.PendingLoginToken" />
- <input type="hidden" name="remember" value="@(Model.LModel?.RememberMe == true ? "true" : "false")" />
- <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
- <a class="btn btn-ghost" href="/Login">Cancel</a>
- <button type="submit" class="btn btn-primary">
- <i class="bi bi-box-arrow-in-right me-1"></i>Sign in and replace other sessions
- </button>
- </div>
- </form>
- </div>
- }
- else
- {
- <form method="post" id="loginForm">
- @Html.AntiForgeryToken()
- <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
- <div asp-validation-summary="All"></div>
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="confirm" value="true" />
+                        <input type="hidden" name="pendingLoginToken" value="@Model.PendingLoginToken" />
+                        <!-- remember removed - server enforces session lifetime -->
+                        <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+                            <a class="btn btn-ghost" href="/Login">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Sign in and replace other sessions
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <form method="post" id="loginForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+                    <div asp-validation-summary="All"></div>
 
- <div class="form-group">
- <label class="form-label" asp-for="LModel.Email">
- <i class="bi bi-envelope me-1"></i>EMAIL
- </label>
- <input type="email" asp-for="LModel.Email" class="form-control" placeholder="you@example.com" />
- </div>
+                    <div class="form-group">
+                        <label class="form-label" asp-for="LModel.Email">
+                            <i class="bi bi-envelope me-1"></i>EMAIL
+                        </label>
+                        <input type="email" asp-for="LModel.Email" class="form-control" placeholder="you@example.com" />
+                    </div>
 
- <div class="form-group">
- <label class="form-label" asp-for="LModel.Password">
- <i class="bi bi-lock me-1"></i>PASSWORD
- </label>
- <input type="password" asp-for="LModel.Password" class="form-control" placeholder="Enter password" />
- </div>
+                    <div class="form-group">
+                        <label class="form-label" asp-for="LModel.Password">
+                            <i class="bi bi-lock me-1"></i>PASSWORD
+                        </label>
+                        <input type="password" asp-for="LModel.Password" class="form-control" placeholder="Enter password" />
+                    </div>
 
- <div class="form-group">
- <label class="form-check" style="font-size:0.85rem;">
- <input type="checkbox" asp-for="LModel.RememberMe" class="form-check-input" />
- <span class="form-check-label">Remember me</span>
- </label>
- </div>
+                    <!-- Remember me removed - session handling is server-side and 'remember' would be ineffective -->
 
- <button type="submit" class="btn btn-primary btn-block">
- <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
- </button>
- </form>
- }
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+                    </button>
+                </form>
+            }
 
- <hr>
+            <hr>
 
- <div style="text-align: center; font-size:0.85rem;">
- <p style="margin-bottom:0.4rem;">
- Don't have an account? <a href="/Register"><i class="bi bi-person-plus me-1"></i>Register</a>
- </p>
- <a href="/Account/ForgotPassword" style="color: var(--gray-500);">Forgot password?</a>
- </div>
- </div>
- </div>
+            <div style="text-align: center; font-size:0.85rem;">
+                <p style="margin-bottom:0.4rem;">
+                    Don't have an account? <a href="/Register"><i class="bi bi-person-plus me-1"></i>Register</a>
+                </p>
+                <a href="/Account/ForgotPassword" style="color: var(--gray-500);">Forgot password?</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
- <partial name="_ValidationScriptsPartial" />
- <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["ReCaptcha:SiteKey"]"></script>
- <script>
- (function(){
- var form = document.getElementById('loginForm');
- if (!form) return;
- form.addEventListener('submit', function(e){
- e.preventDefault();
- var siteKey = '@Configuration["ReCaptcha:SiteKey"]';
- if (!siteKey || siteKey.length === 0) { form.submit(); return; }
- grecaptcha.ready(function(){
- grecaptcha.execute(siteKey, {action: 'login'}).then(function(token){
- document.getElementById('g-recaptcha-response').value = token;
- form.submit();
- });
- });
- });
- })();
- </script>
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["ReCaptcha:SiteKey"]"></script>
+    <script>
+        (function(){
+        var form = document.getElementById('loginForm');
+        if (!form) return;
+        form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var siteKey = '@Configuration["ReCaptcha:SiteKey"]';
+        if (!siteKey || siteKey.length ===0) { form.submit(); return; }
+        grecaptcha.ready(function(){
+        grecaptcha.execute(siteKey, {action: 'login'}).then(function(token){
+        document.getElementById('g-recaptcha-response').value = token;
+        form.submit();
+        });
+        });
+        });
+        })();
+    </script>
 }

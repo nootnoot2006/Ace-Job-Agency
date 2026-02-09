@@ -1,40 +1,40 @@
 ﻿@page
 @model Ace_Job_Agency.Pages.ErrorModel
 @{
- ViewData["Title"] = "Error";
+    ViewData["Title"] = "Error";
 }
 
 <div class="container" style="max-width: 500px; margin-top: 80px;">
- <div class="card">
- <div class="card-header" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); color: white; text-align: center;">
- <h1 style="margin: 0; color: white; font-size: 2rem;">⚠️ Error</h1>
- <p style="margin: 0.5rem 0 0 0; color: rgba(255,255,255,0.8);">Something went wrong</p>
- </div>
+    <div class="card">
+        <div class="card-header" style="background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); color: white; text-align: center;">
+            <h1 style="margin: 0; color: white; font-size: 2rem;">⚠️ Error</h1>
+            <p style="margin: 0.5rem 0 0 0; color: rgba(255,255,255,0.8);">Something went wrong</p>
+        </div>
 
- <div class="card-body" style="text-align: center; padding: 2rem;">
- <p style="font-size: 1.1rem; margin-bottom: 1rem;">
- An unexpected error has occurred.
- </p>
- <p style="color: #6b7280; margin-bottom: 1.5rem;">
- We've logged this incident and our team will investigate.
- </p>
+        <div class="card-body" style="text-align: center; padding: 2rem;">
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">
+                An unexpected error has occurred.
+            </p>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">
+                We've logged this incident and our team will investigate.
+            </p>
 
- @if (Model.ShowRequestId)
- {
- <div style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: left;">
- <p style="margin: 0; font-size: 0.9rem; color: #6b7280;">
- <strong>Request ID:</strong>
- </p>
- <p style="margin: 0.5rem 0 0 0; font-family: monospace; word-break: break-all; color: #374151;">
- @Model.RequestId
- </p>
- </div>
- }
+            @if (Model.ShowRequestId)
+            {
+                <div style="background: #f3f4f6; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: left;">
+                    <p style="margin: 0; font-size: 0.9rem; color: #6b7280;">
+                        <strong>Request ID:</strong>
+                    </p>
+                    <p style="margin: 0.5rem 0 0 0; font-family: monospace; word-break: break-all; color: #374151;">
+                        @Model.RequestId
+                    </p>
+                </div>
+            }
 
- <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
- <a href="/" class="btn btn-primary">🏠 Go to Home</a>
- <a href="javascript:history.back()" class="btn btn-secondary">← Go Back</a>
- </div>
- </div>
- </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/" class="btn btn-primary">🏠 Go to Home</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">← Go Back</a>
+            </div>
+        </div>
+    </div>
 </div>

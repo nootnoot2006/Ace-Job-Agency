@@ -100,7 +100,12 @@ namespace Ace_Job_Agency.Pages
             if (foundUser == null)
             {
                 ModelState.AddModelError("", "Username or Password incorrect");
-                _db.AuditLogs.Add(new AuditLog { EventType = "LoginFail", UserId = null, IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), UserAgent = Request.Headers["User-Agent"].ToString(), Timestamp = DateTime.UtcNow });
+                _db.AuditLogs.Add(new AuditLog { 
+                    EventType = "LoginFail", 
+                    UserId = null, 
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), 
+                    UserAgent = Request.Headers["User-Agent"].ToString(), 
+                    Timestamp = DateTime.UtcNow });
                 await _db.SaveChangesAsync();
                 return Page();
             }
@@ -128,28 +133,39 @@ namespace Ace_Job_Agency.Pages
                     maxPasswordAge = TimeSpan.FromDays(maxAgeDays);
                 }
 
-                if (foundUser.LastPasswordChangedAt.HasValue)
+                // If LastPasswordChangedAt is null (legacy user), treat password as expired.
+                // Otherwise check if password age exceeds max age.
+                bool passwordExpired;
+                if (!foundUser.LastPasswordChangedAt.HasValue)
+                {
+                    passwordExpired = true;
+                }
+                else
                 {
                     var passwordAge = DateTime.UtcNow - foundUser.LastPasswordChangedAt.Value;
-                    if (passwordAge > maxPasswordAge)
+                    passwordExpired = passwordAge > maxPasswordAge;
+                }
+
+                if (passwordExpired)
+                {
+                    _db.AuditLogs.Add(new AuditLog
                     {
-                        _db.AuditLogs.Add(new AuditLog
-                        {
-                            EventType = "PasswordExpired",
-                            UserId = foundUser.Id,
-                            IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                            UserAgent = Request.Headers["User-Agent"].ToString(),
-                            Timestamp = DateTime.UtcNow,
-                            Details = $"Password age: {passwordAge.TotalMinutes:F1} min (max: {maxPasswordAge.TotalMinutes:F1} min)"
-                        });
-                        await _db.SaveChangesAsync();
+                        EventType = "PasswordExpired",
+                        UserId = foundUser.Id,
+                        IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                        UserAgent = Request.Headers["User-Agent"].ToString(),
+                        Timestamp = DateTime.UtcNow,
+                        Details = foundUser.LastPasswordChangedAt.HasValue
+                            ? $"Password age: {(DateTime.UtcNow - foundUser.LastPasswordChangedAt.Value).TotalMinutes:F1} min (max: {maxPasswordAge.TotalMinutes:F1} min)"
+                            : "LastPasswordChangedAt was null (legacy user)"
+                    });
+                    await _db.SaveChangesAsync();
 
-                        // Sign in temporarily to allow password change
-                        await ReplaceExistingSessions(foundUser.Id);
-                        await CreateSessionAndSignIn(foundUser, false);
+                    // Sign in temporarily to allow password change
+                    await ReplaceExistingSessions(foundUser.Id);
+                    await CreateSessionAndSignIn(foundUser, false);
 
-                        return RedirectToPage("/Manage/ChangePassword", new { expired = true });
-                    }
+                    return RedirectToPage("/Manage/ChangePassword", new { expired = true });
                 }
 
                 // ????????????????????????????????????????????????????????????????
@@ -207,7 +223,7 @@ namespace Ace_Job_Agency.Pages
 
                 // No 2FA - proceed with normal login
                 await ReplaceExistingSessions(foundUser.Id);
-                await CreateSessionAndSignIn(foundUser, LModel.RememberMe);
+                await CreateSessionAndSignIn(foundUser, false);
                 return RedirectToPage("Index");
             }
 
@@ -255,7 +271,8 @@ namespace Ace_Job_Agency.Pages
             }
 
             var userId = HttpContext.Session.GetString("pendingUserId");
-            var remember = (Request.Form["remember"] == "true") || (Request.Form["remember"] == "on");
+
+// remember logic removed - server controls session lifetime
 
             var targetUser = await userManager.FindByIdAsync(userId ?? "");
             if (targetUser == null)
@@ -269,7 +286,7 @@ namespace Ace_Job_Agency.Pages
             HttpContext.Session.Remove("pendingLoginToken");
             HttpContext.Session.Remove("pendingUserId");
 
-            await CreateSessionAndSignIn(targetUser, remember);
+            await CreateSessionAndSignIn(targetUser, false);
             return RedirectToPage("Index");
         }
 

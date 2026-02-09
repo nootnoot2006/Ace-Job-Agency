@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ace_Job_Agency.Pages.Account
@@ -45,6 +47,12 @@ namespace Ace_Job_Agency.Pages.Account
 
         public void OnGet(string token = null, string email = null)
         {
+            // Decode the Base64Url-encoded token back to the original token string
+            if (!string.IsNullOrEmpty(token))
+            {
+                token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            }
+
             Input = new InputModel { Token = token, Email = email };
         }
 

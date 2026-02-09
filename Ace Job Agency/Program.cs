@@ -31,8 +31,18 @@ var maxPasswordAgeTestMode = builder.Configuration.GetValue<bool>("PolicyMode:Ma
 TimeSpan sessionTimeout;
 if (sessionTimeoutTestMode)
 {
-    var seconds = builder.Configuration.GetValue<int>("SessionTimeout:TestSeconds", 10);
-    sessionTimeout = TimeSpan.FromSeconds(seconds);
+    // Prefer minutes for test mode (more readable), but keep backwards compatibility
+    // with the previous `SessionTimeout:TestSeconds` setting.
+    var testMinutes = builder.Configuration.GetValue<int?>("SessionTimeout:TestMinutes");
+    if (testMinutes.HasValue)
+    {
+        sessionTimeout = TimeSpan.FromMinutes(testMinutes.Value);
+    }
+    else
+    {
+        var seconds = builder.Configuration.GetValue<int>("SessionTimeout:TestSeconds", 10);
+        sessionTimeout = TimeSpan.FromSeconds(seconds);
+    }
 }
 else
 {

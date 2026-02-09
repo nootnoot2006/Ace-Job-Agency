@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Ace_Job_Agency.Pages.Account
 {
@@ -40,8 +42,12 @@ namespace Ace_Job_Agency.Pages.Account
  if (user == null) return RedirectToPage("/Account/ForgotPasswordConfirmation");
 
  var token = await _userManager.GeneratePasswordResetTokenAsync(user);
- var encodedToken = WebUtility.UrlEncode(token);
- var resetLink = Url.Page("/Account/ResetPassword", null, new { token = encodedToken }, Request.Scheme);
+
+ // Use Base64 URL-safe encoding so token survives email clients/links reliably
+ var tokenBytes = Encoding.UTF8.GetBytes(token);
+ var encodedToken = WebEncoders.Base64UrlEncode(tokenBytes);
+
+ var resetLink = Url.Page("/Account/ResetPassword", null, new { token = encodedToken, email = user.Email }, Request.Scheme);
  await _emailSender.SendEmailAsync(user.Email, "Reset Password", $"Click here to reset your password: {resetLink}");
 
  // audit log may record password reset request without PII

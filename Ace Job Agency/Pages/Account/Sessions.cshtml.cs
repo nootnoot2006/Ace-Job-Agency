@@ -50,7 +50,13 @@ namespace Ace_Job_Agency.Pages.Account
             if (session != null)
             {
                 _db.ActiveSessions.Remove(session);
-                _db.AuditLogs.Add(new AuditLog { EventType = "SessionRevoked", UserId = user.Id, IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), UserAgent = HttpContext.Request.Headers["User-Agent"].ToString(), Timestamp = DateTime.UtcNow, Details = $"Revoked session {id}" });
+                _db.AuditLogs.Add(new AuditLog { 
+                    EventType = "SessionRevoked", 
+                    UserId = user.Id, 
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(), 
+                    UserAgent = HttpContext.Request.Headers["User-Agent"].ToString(), 
+                    Timestamp = DateTime.UtcNow, 
+                    Details = $"Revoked session {id}" });
                 await _db.SaveChangesAsync();
             }
             return RedirectToPage();
